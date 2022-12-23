@@ -24,7 +24,7 @@ class Combat:
         else:
             return self.combat(*winners)
 
-    def __call__(self, n_rounds):
+    def __call__(self, n_rounds: int):
         for _ in range(n_rounds):
             self.combat(*self.roster)
 

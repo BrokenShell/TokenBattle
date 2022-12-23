@@ -1,2 +1,2 @@
-Fortuna[scope]
+Fortuna
 MonkeyScope
