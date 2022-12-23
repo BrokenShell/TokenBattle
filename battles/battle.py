@@ -1,32 +1,38 @@
 from collections import defaultdict
 
-from battles.character import Character
+from battles.units import Character
 
 
-class Combat:
+class BattleField:
 
     def __init__(self, *roster: Character):
         self.roster = list(roster)
         self.history = defaultdict(int)
 
-    def combat(self, *roster: Character):
+    def _battle(self, *roster: Character):
         assert len(roster) > 1, "The roster must contain at least 2 characters!"
-        battle_field = {unit.name: unit() for unit in roster}
-        highest = max(battle_field.values())
+        field = {unit.name: unit() for unit in roster}
         winners = [
             character for character in roster
-            if battle_field[character.name] == highest
+            if field[character.name] == max(field.values())
         ]
         if len(winners) == 1:
             winner, *_ = winners
             self.history[winner.name] += 1
             return winner
         else:
-            return self.combat(*winners)
+            return self._battle(*winners)
 
     def __call__(self, n_rounds: int):
         for _ in range(n_rounds):
-            self.combat(*self.roster)
+            self._battle(*self.roster)
+        return self
 
     def __str__(self):
-        return "\n".join(f"{k}: {v}" for k, v in self.history.items())
+        output = sorted((
+            (k, v) for k, v in self.history.items()
+        ), key=lambda x: x[1], reverse=True)
+        return "\n".join(f"{k}: {v}" for k, v in output)
+
+    def __repr__(self):
+        return str(self)
